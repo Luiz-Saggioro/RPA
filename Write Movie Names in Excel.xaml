@@ -1,11 +1,12 @@
 <Activity mc:Ignorable="sap sap2010" x:Class="Write_in_Excel" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_str_txt" Type="InArgument(x:String)" />
+    <x:Property Name="out_arrayOfMovies" Type="InArgument(s:String[])" />
   </x:Members>
   <VisualBasic.Settings>
     <x:Null />
   </VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1206,1208</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1206,1372</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>Write_in_Excel_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
@@ -85,7 +86,7 @@
       <AssemblyReference>UiPath.Excel</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Write_in_Excel" sap:VirtualizedContainerService.HintSize="668,1143" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap2010:Annotation.AnnotationText="This file is made to write the values from the movie names into the Excel file without the imperfections that may come with the users input" DisplayName="Write_in_Excel" sap:VirtualizedContainerService.HintSize="668,1307" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="s:String[]" Name="dt_array" />
       <Variable x:TypeArguments="x:Int32" Name="count" />
@@ -93,19 +94,24 @@
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:InvokeCode ContinueOnError="{x:Null}" Code="Dim inputString As String = in_str_txt&#xD;&#xA;Dim charactersToRemove As String() = {&quot;?&quot;, &quot;.&quot;, &quot;,&quot;}&#xD;&#xA;&#xD;&#xA;' Remove unwanted characters&#xD;&#xA;For Each character As String In charactersToRemove&#xD;&#xA;    inputString = inputString.Replace(character, &quot;&quot;)&#xD;&#xA;Next&#xD;&#xA;&#xD;&#xA;' Split the cleaned-up string into an array&#xD;&#xA;Dim delimiter As String() = {Environment.NewLine}&#xD;&#xA;Dim resultArray As String() = inputString.Split(delimiter, StringSplitOptions.RemoveEmptyEntries)&#xD;&#xA;&#xD;&#xA;' Copy the split elements into the out_resultArray variable&#xD;&#xA;out_resultArray = resultArray&#xD;&#xA;" DisplayName="Invoke Code" sap:VirtualizedContainerService.HintSize="606,165" sap2010:WorkflowViewState.IdRef="InvokeCode_1">
+    <ui:InvokeCode ContinueOnError="{x:Null}" Code="Dim inputString As String = in_str_txt&#xD;&#xA;inputString = System.Text.RegularExpressions.Regex.Replace(inputString, &quot;[^a-zA-Z0-9\s]&quot;, &quot;&quot;)&#xD;&#xA;&#xD;&#xA;' Split the cleaned-up string into an array&#xD;&#xA;Dim delimiter As String() = {Environment.NewLine}&#xD;&#xA;Dim resultArray As String() = inputString.Split(delimiter, StringSplitOptions.RemoveEmptyEntries)&#xD;&#xA;&#xD;&#xA;' Copy the split elements into the out_resultArray variable&#xD;&#xA;out_resultArray = resultArray&#xD;&#xA;" DisplayName="Invoke Code - Filter Movies and Insert into Array" sap:VirtualizedContainerService.HintSize="606,165" sap2010:WorkflowViewState.IdRef="InvokeCode_2">
       <ui:InvokeCode.Arguments>
-        <InArgument x:TypeArguments="x:String" x:Key="in_str_txt">
-          <VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_str_txt" />
-        </InArgument>
-        <OutArgument x:TypeArguments="s:String[]" x:Key="out_resultarray">
-          <VisualBasicReference x:TypeArguments="s:String[]" ExpressionText="dt_array" />
-        </OutArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_str_txt">[in_str_txt]</InArgument>
+        <OutArgument x:TypeArguments="s:String[]" x:Key="out_resultarray">[dt_array]</OutArgument>
       </ui:InvokeCode.Arguments>
     </ui:InvokeCode>
-    <Assign sap:VirtualizedContainerService.HintSize="606,82" sap2010:WorkflowViewState.IdRef="Assign_1">
+    <Assign DisplayName="Assign - Assign Array value" sap:VirtualizedContainerService.HintSize="606,82" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="s:String[]">[out_arrayOfMovies]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="s:String[]">[dt_array]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="Assign - Assign Counter" sap:VirtualizedContainerService.HintSize="606,82" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Int32">[count]</OutArgument>
       </Assign.To>
@@ -113,7 +119,7 @@
         <InArgument x:TypeArguments="x:Int32">2</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each" sap:VirtualizedContainerService.HintSize="606,705" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_array]">
+    <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each - Items in Array Will be Written in Excel" sap:VirtualizedContainerService.HintSize="606,705" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[dt_array]">
       <ui:ForEach.Body>
         <ActivityAction x:TypeArguments="x:String">
           <ActivityAction.Argument>
@@ -125,7 +131,7 @@
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="530,431" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" WorkbookPath="C:\Users\luizg\OneDrive\Área de Trabalho\Projects\UiPath\Txt to Movie Search\Movies.xlsx">
+            <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="530,431" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" InstanceCachePeriod="3000" Visible="False" WorkbookPath="C:\Users\luizg\OneDrive\Área de Trabalho\Projects\UiPath\Txt to Movie Search\Movies.xlsx">
               <ui:ExcelApplicationScope.Body>
                 <ActivityAction x:TypeArguments="ui:WorkbookApplication">
                   <ActivityAction.Argument>
@@ -137,7 +143,7 @@
                         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
-                    <ui:ExcelWriteCell Cell="[&quot;A&quot; +count.ToString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="434,88" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_1" SheetName="Sheet1" Text="[currentItem.ToString]" />
+                    <ui:ExcelWriteCell Cell="[&quot;A&quot; +count.ToString]" DisplayName="Write Cell - Write Movie Name" sap:VirtualizedContainerService.HintSize="434,88" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_1" SheetName="Sheet1" Text="[currentItem.ToString]" />
                     <Assign sap:VirtualizedContainerService.HintSize="434,82" sap2010:WorkflowViewState.IdRef="Assign_2">
                       <Assign.To>
                         <OutArgument x:TypeArguments="x:Int32">[count]</OutArgument>
