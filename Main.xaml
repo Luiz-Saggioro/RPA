@@ -78,10 +78,10 @@
       <AssemblyReference>System.Private.Uri</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap2010:Annotation.AnnotationText="The process is aimed to read different movie titles poorly written in a TXT file, transfer inforamtion from the IBM website into the cell fields of the Excel.&#xD;&#xA;&#xD;&#xA;This is a very basic process to display what can be done with Uipath Studio even when using only its most basic capabilities&#xD;&#xA;&#xD;&#xA;Author: Luiz Saggioro&#xD;&#xA;date:2-15-2024" DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="450,629" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap2010:Annotation.AnnotationText="The process is aimed to read different movie titles poorly written in a TXT file, transfer inforamtion from the IBM website into the cell fields of the Excel.&#xA;&#xA;This is a very basic process to display what can be done with Uipath Studio even when using only its most basic capabilities&#xA;&#xA;Author: Luiz Saggioro&#xA;date:2-15-2024" DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="450,629" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="str_fileread" />
-      <Variable x:TypeArguments="s:String[]" Name="array" />
+      <Variable x:TypeArguments="s:String[]" Name="dt_array" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -95,16 +95,14 @@
         <InArgument x:TypeArguments="x:String" x:Key="in_str_txt">
           <VisualBasicValue x:TypeArguments="x:String" ExpressionText="str_fileread" />
         </InArgument>
-        <InArgument x:TypeArguments="s:String[]" x:Key="out_arrayOfMovies">
-          <VisualBasicValue x:TypeArguments="s:String[]" ExpressionText="array" />
-        </InArgument>
+        <InOutArgument x:TypeArguments="s:String[]" x:Key="out_arrayOfMovies">
+          <VisualBasicReference x:TypeArguments="s:String[]" ExpressionText="dt_array" />
+        </InOutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
     <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Search adn Write Information Down" sap:VirtualizedContainerService.HintSize="388,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Search and Write info.xaml">
       <ui:InvokeWorkflowFile.Arguments>
-        <InArgument x:TypeArguments="s:String[]" x:Key="in_array">
-          <VisualBasicValue x:TypeArguments="s:String[]" ExpressionText="array" />
-        </InArgument>
+        <InArgument x:TypeArguments="s:String[]" x:Key="in_array">[dt_array]</InArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
   </Sequence>
